@@ -47,20 +47,20 @@ class Mat {
 		return this;
 	}
 
-	mul(other) {
-		if (other.constructor.name != Mat.name)
-			throw "Object 'other' is not a matrix!";
-		if (this.width != other.height)
-			throw "Dimension mismatch; this.width != other.height"
+	mul(right) {
+		if (right.constructor.name != Mat.name)
+			throw "Object 'right' is not a matrix!";
+		if (this.width != right.height)
+			throw "Dimension mismatch; this.width != right.height"
 
-		let result = new Mat(other.width, other.height);
+		let result = new Mat(right.width, right.height);
 
 		let i = 0;
-		for (let r = 0; r < result.width; r++) {
-			for (let c = 0; c < result.height; c++) {
+		for (let r = 0; r < result.height; r++) {
+			for (let c = 0; c < result.width; c++) {
 				let sum = 0.0;
-				for (let j = 0; j < this.width; j++)
-					sum += this.getElement(j, r) * other.getElement(c, j);
+				for (let j = 0; j < result.height; j++)
+					sum += this.getElement(j, r) * right.getElement(c, j);
 				result.elements[i++] = sum;
 			}	
 		}
@@ -87,7 +87,7 @@ class Mat {
 						for (let c = 0; c < left.width; c++)
 							left.elements[c + d * left.width] += left.elements[c + r * left.width] / cc;
 						for (let c = 0; c < right.width; c++)
-							right.elements[c + d * right.width] += right.elements[c + r * left.width] / cc;
+							right.elements[c + d * right.width] += right.elements[c + r * right.width] / cc;
 						break;
 					}
 				}
@@ -121,11 +121,20 @@ class Mat {
 	}
 
 	getElement(c, r) {
+		this.checkBounds(c, r);
 		return this.elements[c + r * this.width];
 	}
 
 	setElement(c, r, elem) {
+		this.checkBounds(c, r);
 		this.elements[c + r * this.width] = elem;
+	}
+
+	checkBounds(c, r) {
+		if (c < 0 || c >= this.width)
+			throw "Index out of bounds; c = " + c;
+		if (r < 0 || r >= this.height)
+			throw "Index out of bounds; r = " + r;
 	}
 
 	copy() {
