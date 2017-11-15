@@ -47,7 +47,7 @@ class Mat {
 		return this;
 	}
 
-	mulMat(other) {
+	mul(other) {
 		if (other.constructor.name != Mat.name)
 			throw "Object 'other' is not a matrix!";
 		if (this.width != other.height)
@@ -68,6 +68,58 @@ class Mat {
 		return result;
 	}
 
+	solve(right) {
+		if (this.width != this.height)
+			throw "Matrix not solvable; width != height";
+		if (right.height != this.height)
+			throw "Dimension mismatch; right.height != this.height";
+	
+		const left = this.copy();
+		
+		for (let d = 0; d < left.height; d++) {
+			let v = left.getElement(d, d);
+
+			if (v < EPSILON && v > -EPSILON) {
+				let r = d + 1;
+				for ( ; r < left.height; r++) {
+					let cc = left.getElement(d, r);
+					if (cc > EPSILON || cc < -EPSILON) {
+						for (let c = 0; c < left.width; c++)
+							left.elements[c + d * left.width] += left.elements[c + r * left.width] / cc;
+						for (let c = 0; c < right.width; c++)
+							right.elements[c + d * right.width] += right.elements[c + r * left.width] / cc;
+						break;
+					}
+				}
+
+				if (r >= left.height)
+					throw "Matrix not invertable";
+			} else if (v != 1.0) {
+				left.setElement(d, d, 1.0);
+				for (let c = d + 1; c < left.width; c++)
+					left.elements[c + d * left.width] /= v;
+				for (let c = 0; c < right.width; c++)
+					right.elements[c + d * right.width] /= v;
+			}
+
+			for (let r = 0; r < left.height; r++) {
+				if (r == d)
+					continue;
+				
+				let cc = left.getElement(d, r);
+				if (cc != 0.0) {
+					left.setElement(d, r, 0.0);
+					for (let c = d + 1; c < left.width; c++)
+						left.elements[c + r * left.width] -= left.elements[c + d * left.width] * cc;
+					for (let c = 0; c < right.width; c++)
+						right.elements[c + r * right.width] -= right.elements[c + d * right.width] * cc;
+				}
+			}
+		}
+
+		return right;
+	}
+
 	getElement(c, r) {
 		return this.elements[c + r * this.width];
 	}
@@ -76,18 +128,25 @@ class Mat {
 		this.elements[c + r * this.width] = elem;
 	}
 
+	copy() {
+		const result = new Mat(this.width, this.height);
+		for (let i = 0; i < this.size; i++)
+			result.elements[i] = this.elements[i];
+		return result;
+	}
+
 	toString() {
-		let res = "";
+		let result = "";
 		let i = 0;
 		for (let r = 0; r < this.height; r++) {
 			if (r != 0)
-				res += ", \n";
+				result += ", \n";
 			for (let c = 0; c < this.width; c++) {
 				if (c != 0)
-					res += ", ";
-				res += this.elements[i++].toFixed(4);
+					result += ", ";
+				result += this.elements[i++].toFixed(4);
 			}
 		}
-		return res;
+		return result;
 	}
 }
