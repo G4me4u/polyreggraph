@@ -14,12 +14,13 @@ class Point {
 	translate(x, y) {
 		this.x += x;
 		this.y += y;
+		return this;
 	}
 
 	distSqr(other) {
 		return (other.x - this.x) *
-			   (other.x - this.x) +
-			   (other.y - this.y) *
+		       (other.x - this.x) +
+		       (other.y - this.y) *
 		       (other.y - this.y);
 	}
 

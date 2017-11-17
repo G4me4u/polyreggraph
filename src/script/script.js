@@ -1,21 +1,43 @@
-let m = new Mat(3, 3);
-m.setElement(0, 0, 0.0);
-m.setElement(1, 0, 1.0);
-m.setElement(2, 0, 1.0);
+var canvas;
+var ctx;
 
-m.setElement(0, 1, 1.0);
-m.setElement(1, 1, 0.0);
-m.setElement(2, 1, 1.0);
+var points;
 
-m.setElement(0, 2, 1.0);
-m.setElement(1, 2, 1.0);
-m.setElement(2, 2, 0.0);
+function init() {
+	canvas = document.getElementById("display");
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
 
-console.log("Inverting...");
+	ctx = canvas.getContext("2d");
 
-let inverse = m.solve(new Mat(3, 3).toIdentity());
+	points = [];
+	let num = 6;
+	for (let i = 0; i < num; i++)
+		points.push(new Point(Math.random() * 2 - 1, Math.random() * 2 - 1));
+	drawGraph(new Polynomial(points));
+}
 
-console.log(inverse.toString());
+function drawGraph(graph) {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-console.log("Multiplying...");
-console.log(inverse.mul(m).toString());
+	if (graph) {
+		ctx.beginPath();
+		let first = true;
+		for (let x = -1.0; x < 1.0; x += 0.01) {
+			if (first) {
+				first = false;
+				ctx.moveTo((x + 1) * canvas.width / 2, (1 - graph.getY(x)) * canvas.height / 2);
+			} else {
+				ctx.lineTo((x + 1) * canvas.width / 2, (1 - graph.getY(x)) * canvas.height / 2);
+			}
+		}
+		ctx.strokeStyle = "black";
+		ctx.stroke();
+	}
+		
+	ctx.fillStyle = "red";
+	for (let point of points)
+		ctx.fillRect((point.x + 1) * canvas.width / 2 - 5, (1 - point.y) * canvas.height / 2 - 5, 10, 10);
+}
+
+requestAnimationFrame(init);

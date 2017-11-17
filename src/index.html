@@ -4,11 +4,35 @@
 	<head>
 		<!-- Utility classes !-->
 		<script src="./script/constants.js"></script>
+
+		<script src="./script/point.js"></script>
 		<script src="./script/mat.js"></script>
+		<script src="./script/polynomial.js"></script>
 		<!-- Main class !-->
 		<script src="./script/script.js"></script>
 	</head>
+
+	<style>
+		body {
+			margin: 0;
+		}
+
+		.wrapper {
+			width: 100%;
+			height: 100%;
+
+			text-align: center;
+		}
+
+		#display {
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+
 	<body>
-		
+		<div class="wrapper">
+			<canvas id="display"></canvas>
+		</div>
 	</body>
 </html>

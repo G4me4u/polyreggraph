@@ -20,7 +20,7 @@
  */
 class Mat {
 
-	constructor(width, height) {
+	constructor(width, height=width) {
 		if (width == 0 || height == 0)
 			throw "Invalid matrix! Width and height must be positive";
 

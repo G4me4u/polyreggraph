@@ -1,1 +1,1 @@
-const EPSILON = 0.001;
+const EPSILON = 0.00001;
