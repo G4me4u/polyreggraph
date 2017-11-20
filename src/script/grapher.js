@@ -7,6 +7,7 @@ class Grapher {
 	}
 
 	drawGraph(graph) {
+		ctx.beginPath();
 		this.moveCurser(this.min, graph.getY(this.min));
 		for (let x = this.min + this.step; x < this.max; x += this.step)
 			this.curserLineTo(x, graph.getY(x));

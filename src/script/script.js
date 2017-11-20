@@ -15,9 +15,21 @@ function init() {
 	grapher = new Grapher();
 
 	points = [];
-	let num = 6;
-	for (let i = 0; i < num; i++)
-		points.push(new Point(Math.random() * 2 - 1, Math.random() * 2 - 1));
+	let num = 4;
+	for (let i = -1; i <= num; i++)
+		points.push(new Point(i / (num - 1) * 2.0 - 1.0, Math.random() * 2 - 1));
+	setInterval(move, 16);
+}
+
+function move() {
+	for (let i = points.length - 1; i >= 0; i--) 
+		points[i].x -= 0.01;
+	if (points[0].x < -1.0) {
+		points.splice(0, 1);
+		let x = points[points.length - 1].x + 1 / (points.length - 1) * 2.0;
+		points.push(new Point(x, Math.random() * 2 - 1));
+	}
+	
 	drawGraph(new Polynomial(points));
 }
 
